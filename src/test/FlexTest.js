@@ -17,8 +17,55 @@ import {
     Image,
     TextInput,
     Button,
-    ToastAndroid
+    ToastAndroid,
+    TouchableNativeFeedback,
+    ScrollView,
+    FlatList,
+    SectionList,
+    ActivityIndicator
 } from 'react-native';
+
+class FetchExample extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {isLoading: true}
+    }
+
+    componentDidMount() {
+        return fetch('https://facebook.github.io/react-native/movies.json')
+            .then((response) => response.json())
+            .then((responseJson) => {
+                this.setState({
+                    isLoading: false,
+                    dataSource: responseJson.movies
+                })
+            }).catch((error) => {
+                console.log(error)
+            })
+    }
+
+
+    render() {
+        if (this.state.isLoading) {
+            return (
+                <View style={{flex: 1, padding: 20}}>
+                    <ActivityIndicator/>
+                </View>
+            )
+        }
+        return (
+            <View style={{flex: 1, paddingTop: 20}}>
+                <FlatList
+                    data={this.state.dataSource}
+                    renderItem={({item}) => <Text>{item.title} {item.releaseYear}</Text>}
+                    keyExtractor={({id}, index) => id}
+                />
+
+            </View>
+        );
+    }
+
+}
 
 export default class Home extends Component {
 
@@ -28,28 +75,28 @@ export default class Home extends Component {
             username: '',
             password: '',
         }
-        this.login = this.login.bind(this)
-
     }
 
-// {/*<View style={{flex: 1, flexDirection: 'row'}}>*/}
-// {/*<View style={{flex: 1, backgroundColor: 'powderblue'}}/>*/
-// }
-// {/*<View style={{flex: 2, backgroundColor: 'skyblue'}}/>*/
-// }
-// {/*<View style={{flex: 3, backgroundColor: 'steelblue'}}/>*/
-// }
-// {/*</View>*/
-// }
 
     login() {
-        // console.log(this.input);
-        ToastAndroid.show('login success!' + this.state.username, ToastAndroid.SHORT);
+        ToastAndroid.show('login success!', ToastAndroid.SHORT);
+    }
+
+    nativePress() {
+        ToastAndroid.show('native button!', ToastAndroid.SHORT);
     }
 
     render() {
         return (
-            <View style={{padding: 10}}>
+            <ScrollView style={{paddingRight: 15, paddingLeft: 15}}>
+                <View style={{height: 300, flexDirection: 'row'}}>
+                    <View style={{flex: 1, backgroundColor: 'powderblue'}}/>
+
+                    <View style={{flex: 2, backgroundColor: 'skyblue'}}/>
+
+                    <View style={{flex: 3, backgroundColor: 'steelblue'}}/>
+                </View>
+
                 <TextInput
                     ref={(el) => {
                         this.input = el
@@ -70,7 +117,46 @@ export default class Home extends Component {
                 </Text>
 
                 <Button onPress={this.login} title="Login In"/>
-            </View>
+
+                <TouchableNativeFeedback
+                    onPress={this.nativePress}>
+                    <Text style={{
+                        height: 50
+                    }}>i am
+                        button</Text>
+                </TouchableNativeFeedback>
+
+
+                <FlatList
+                    data={[
+                        {key: 'Devin'},
+                        {key: 'Jackson'},
+                        {key: 'James'},
+                        {key: 'Joel'},
+                        {key: 'John'},
+                        {key: 'Jillian'},
+                        {key: 'Jimmy'},
+                        {key: 'Julie'},
+                    ]}
+                    renderItem={({item}) => <Text>{item.key}</Text>}/>
+
+                <SectionList
+                    sections={[
+                        {title: 'D', data: ['Devin']},
+                        {
+                            title: 'J', data: ['Jackson',
+                            'James', 'Jillian', 'Jimmy',
+                            'Joel', 'John']
+                        }
+                    ]}
+                    renderItem={({item}) => <Text>{item}</Text>}
+                    renderSectionHeader={({section}) => <Text>
+                        {section.title}
+                    </Text>}
+                    keyExtractor={(item, index) => index}
+                />
+
+            </ScrollView>
         )
     }
 }
