@@ -50,6 +50,12 @@ class Greeting extends Component {
 
 
 export default class Home extends Component {
+
+
+    static navigationOptions = {
+        title: '王二',
+    };
+
     render() {
         let pic = {
             uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'

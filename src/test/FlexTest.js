@@ -76,10 +76,13 @@ export default class Home extends Component {
             password: '',
         }
     }
-
+    static navigationOptions = {
+        title: 'Home',
+    };
 
     login() {
         ToastAndroid.show('login success!', ToastAndroid.SHORT);
+        this.props.navigation.navigate('Profile')
     }
 
     nativePress() {
@@ -116,7 +119,7 @@ export default class Home extends Component {
                     {this.state.password}
                 </Text>
 
-                <Button onPress={this.login} title="Login In"/>
+                <Button onPress={() => this.props.navigation.navigate('Profile')} title="Login In"/>
 
                 <TouchableNativeFeedback
                     onPress={this.nativePress}>
